@@ -10,8 +10,10 @@ type
   TForm1 = class(TForm)
     Button1: TButton;
     Button2: TButton;
+    Button3: TButton;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
+    procedure Button3Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -20,6 +22,8 @@ type
 
   TCalcPlus = function (n1,n2: double): Double; stdcall;
   TStrRepeat = function (const s1: PChar; const n: Integer): PChar; stdcall;
+
+  function RandomCalc(n1: Integer): Integer; stdcall; external 'C:\repojm\DELPHI_DLL\FSample.dll';
 
 var
   Form1: TForm1;
@@ -52,7 +56,8 @@ begin
          else
               raise Exception.Create('Method not found');
 
-         FreeLibrary(loHandle)
+         if loHandle <> 0 then
+           FreeLibrary(loHandle);
        end
   else
        raise Exception.Create('DLL not found');
@@ -82,10 +87,20 @@ begin
          else
               raise Exception.Create('Method not found');
 
-         FreeLibrary(loHandle)
+         if loHandle <> 0 then
+            FreeLibrary(loHandle);
        end
   else
        raise Exception.Create('DLL not found');
 end;
+
+procedure TForm1.Button3Click(Sender: TObject);
+var
+  result: Integer;
+begin
+  result := RandomCalc(123);
+  ShowMessage('Result: ' + IntToStr(result));
+end;
+
 
 end.
